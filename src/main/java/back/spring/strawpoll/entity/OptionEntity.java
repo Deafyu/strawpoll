@@ -1,21 +1,20 @@
 package back.spring.strawpoll.entity;
 
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.List;
 
-@Data
+@Setter
+@Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @Entity
-public class Group {
+public class Option {
     @Id
     long id;
-
-    String groupName;
-
-    List<Poll> pollList;
+    String name;
+    int votes;
+    long pollId;
 }

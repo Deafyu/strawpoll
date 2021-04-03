@@ -1,20 +1,20 @@
 package back.spring.strawpoll.entity;
 
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.List;
 
+@Setter
+@Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Data
+@NoArgsConstructor
+@Entity
 public class User {
-
-    final long id;
-
+    @Id
+     long id;
     String name;
-
-    List<Group> groupList;
-
     boolean isAdmin;
 }
