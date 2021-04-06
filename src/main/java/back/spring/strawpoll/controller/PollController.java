@@ -3,6 +3,7 @@ package back.spring.strawpoll.controller;
 import back.spring.strawpoll.entity.OptionEntity;
 import back.spring.strawpoll.entity.PollEntity;
 import back.spring.strawpoll.entity.UserEntity;
+import back.spring.strawpoll.repository.VoteRepository;
 import back.spring.strawpoll.service.PollService;
 import back.spring.strawpoll.service.UserService;
 import lombok.experimental.FieldDefaults;
@@ -17,7 +18,6 @@ import java.util.List;
 public class PollController {
     PollService pollService;
     UserService userService;
-
     @Autowired
     public PollController(PollService pollService, UserService userService) {
         this.pollService = pollService;
@@ -47,6 +47,11 @@ public class PollController {
     @RequestMapping(method = RequestMethod.POST, value = "/polls/id={id}/vote")
     public void sumbitVote(long optionId, long userId, long pollId){
         pollService.submitVote(optionId,userId,pollId);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/polls/id={id}/vote")
+    public void displayVoters(long optionId){
+        pollService.displayVoters(optionId);
     }
 
 

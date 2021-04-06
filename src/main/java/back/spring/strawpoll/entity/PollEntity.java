@@ -3,6 +3,7 @@ package back.spring.strawpoll.entity;
 import back.spring.strawpoll.ut.Status;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -27,12 +28,9 @@ public class PollEntity {
     @NotNull
     Status status;
     @OneToMany
-    List<UserEntity> votedBy;
-    @OneToMany
     List<OptionEntity> options;
-    public void addParticipant(UserEntity user){
-        votedBy.add(user);
-    }
+    @Value("0")
+    int votes;
 //    @NotBlank
 //    @OneToOne
 //    UserEntity createdByUser;

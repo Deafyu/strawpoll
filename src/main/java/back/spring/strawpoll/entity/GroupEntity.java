@@ -20,4 +20,6 @@ public class GroupEntity {
     String groupName;
     @ManyToMany
     List<PollEntity>polls;
+    @NotBlank
+    int maxUsers;
 }

@@ -1,4 +1,4 @@
-package back.spring.strawpoll.ut;
+package back.spring.strawpoll.entity;
 
 import back.spring.strawpoll.entity.OptionEntity;
 import back.spring.strawpoll.entity.PollEntity;

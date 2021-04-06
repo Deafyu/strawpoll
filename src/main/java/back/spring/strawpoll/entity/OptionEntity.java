@@ -22,9 +22,4 @@ public class OptionEntity {
     String name;
     @Value("0")
     int votes;
-    @OneToMany
-    List<UserEntity> votedBy;
-    public void addParticipant(UserEntity user){
-        votedBy.add(user);
-    }
 }
