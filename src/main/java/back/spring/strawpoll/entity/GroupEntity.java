@@ -3,9 +3,8 @@ package back.spring.strawpoll.entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Setter
@@ -13,11 +12,12 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @Entity
-public class Group {
+public class GroupEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-
+    @NotBlank
     String groupName;
-
-   // List<Poll> pollList;
+    @ManyToMany
+    List<PollEntity>polls;
 }

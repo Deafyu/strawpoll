@@ -3,8 +3,10 @@ package back.spring.strawpoll.entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -12,9 +14,16 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @Entity
-public class User {
+public class UserEntity {
     @Id
-     long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    long id;
+    @NotBlank
     String name;
+    @NotBlank
+    String password;
+    @NotNull
     boolean isAdmin;
+    @ManyToMany
+    List<GroupEntity>groups;
 }

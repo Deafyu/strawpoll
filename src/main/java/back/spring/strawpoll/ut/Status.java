@@ -1,4 +1,4 @@
-package back.spring.strawpoll.entity;
+package back.spring.strawpoll.ut;
 
 public enum Status {
     CLOSED,
