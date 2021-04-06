@@ -44,13 +44,13 @@ public class PollController {
         pollService.deletePoll(id);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/polls/id={id}/vote")
-    public void sumbitVote(long optionId, long userId, long pollId){
+    @RequestMapping(method = RequestMethod.POST, value = "/polls/id={pollId}/vote")
+    public void sumbitVote(long optionId, long userId, @PathVariable long pollId){
         pollService.submitVote(optionId,userId,pollId);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/polls/id={id}/vote")
-    public void displayVoters(long optionId){
+    @RequestMapping(method = RequestMethod.GET, value = "/polls/id={pollId}/vote/{optionId}")
+    public void displayVoters(@PathVariable long optionId, @PathVariable long pollId){
         pollService.displayVoters(optionId);
     }
 
