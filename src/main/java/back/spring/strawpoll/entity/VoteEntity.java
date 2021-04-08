@@ -1,16 +1,11 @@
 package back.spring.strawpoll.entity;
 
-import back.spring.strawpoll.entity.OptionEntity;
-import back.spring.strawpoll.entity.PollEntity;
-import back.spring.strawpoll.entity.UserEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
@@ -20,7 +15,8 @@ import java.util.Date;
 @Setter
 public class VoteEntity {
     @Id
-    long voteId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    long id;
     @OneToOne
     OptionEntity option;
     @OneToOne

@@ -1,10 +1,8 @@
 package back.spring.strawpoll.service;
 
 import back.spring.strawpoll.entity.UserEntity;
-import back.spring.strawpoll.repository.GroupRepository;
-import back.spring.strawpoll.repository.OptionRepository;
-import back.spring.strawpoll.repository.PollRepository;
-import back.spring.strawpoll.repository.UserRepository;
+import back.spring.strawpoll.entity.VoteEntity;
+import back.spring.strawpoll.repository.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,24 +18,34 @@ public class UserService {
     GroupRepository groupRepository;
     PollRepository pollRepository;
     UserRepository userRepository;
+    VoteRepository voteRepository;
 
     @Autowired
-    public UserService(OptionRepository optionRepository, GroupRepository groupRepository, PollRepository pollRepository, UserRepository userRepository) {
+    public UserService(OptionRepository optionRepository, GroupRepository groupRepository, PollRepository pollRepository, UserRepository userRepository, VoteRepository voteRepository) {
         this.optionRepository = optionRepository;
         this.groupRepository = groupRepository;
         this.pollRepository = pollRepository;
         this.userRepository = userRepository;
+        this.voteRepository = voteRepository;
     }
+
     public List<UserEntity> getAllUsers() {
         return new ArrayList<>(userRepository.findAll());
     }
-    public void createUser(UserEntity user){
+
+    public void createUser(UserEntity user) {
         userRepository.save(user);
     }
-    public Optional<UserEntity> getUserById(long id){
-        return userRepository.findById(id);
+
+    public Optional<UserEntity> getUserById(long userId) {
+        return userRepository.findById(userId);
     }
-    public void deleteUserById(long id){
-        userRepository.deleteById(id);
+
+    public void deleteUserById(long userId) {
+        userRepository.deleteById(userId);
+    }
+
+    public List<VoteEntity> getAllUserVotes(long userId) {
+        return voteRepository.getAllUserVotes(userId);
     }
 }

@@ -24,9 +24,9 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @RequestMapping("/users/id={id}")
-    public Optional<UserEntity> getUser(@PathVariable long id) {
-        return userService.getUserById(id);
+    @RequestMapping("/users/id={userId}")
+    public Optional<UserEntity> getUser(@PathVariable long userId) {
+        return userService.getUserById(userId);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/users")
@@ -34,8 +34,13 @@ public class UserController {
         userService.createUser(user);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/users/id={id}")
-    public void deleteUser(@PathVariable long id) {
-        userService.deleteUserById(id);
+    @RequestMapping(method = RequestMethod.DELETE, value = "/users/id={userId}")
+    public void deleteUser(@PathVariable long userId) {
+        userService.deleteUserById(userId);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/users/id={userId}/votes")
+    public void getAllUserVotes(@PathVariable long userId) {
+        userService.getAllUserVotes(userId);
     }
 }

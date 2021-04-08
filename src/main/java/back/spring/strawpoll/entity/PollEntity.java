@@ -1,6 +1,5 @@
 package back.spring.strawpoll.entity;
 
-import back.spring.strawpoll.ut.Status;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,8 +24,6 @@ public class PollEntity {
     String question;
     Date pollDateCreation;
     Date pollDateExpiration;
-    @NotNull
-    Status status;
     @OneToMany
     List<OptionEntity> options;
     @Value("0")

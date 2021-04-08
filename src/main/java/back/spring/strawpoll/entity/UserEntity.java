@@ -21,8 +21,17 @@ public class UserEntity {
     String name;
     @NotBlank
     String password;
-    @NotNull
-    boolean isAdmin;
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "User_Group",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "group_id") }
+    )
     List<GroupEntity>groups;
+    public void addToGroup(GroupEntity group){
+        groups.add(group);
+    }
+    public void removeFromGroup(GroupEntity group){
+        groups.remove(group);
+    }
 }

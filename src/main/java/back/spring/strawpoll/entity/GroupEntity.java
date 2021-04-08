@@ -22,4 +22,6 @@ public class GroupEntity {
     List<PollEntity>polls;
     @NotBlank
     int maxUsers;
+    @ManyToMany(mappedBy = "groups")
+    List<UserEntity> usersInGroup;
 }

@@ -7,7 +7,6 @@ import back.spring.strawpoll.exception.RequestUnavailableException;
 import back.spring.strawpoll.repository.*;
 import back.spring.strawpoll.entity.VoteEntity;
 import lombok.experimental.FieldDefaults;
-import org.apache.tomcat.jni.Poll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +34,8 @@ public class PollService {
         return new ArrayList<>(pollRepository.findAll());
     }
 
-    public PollEntity getSinglePollById(long id) {
-        return pollRepository.findById(id).orElse(null);
+    public Optional<PollEntity> getSinglePollById(long id) {
+        return pollRepository.findById(id);
     }
 
     public void createPoll(PollEntity pollEntity) {
@@ -54,12 +53,12 @@ public class PollService {
                 () -> new RequestUnavailableException("Poll with Id " + pollId + " doesnt exist"));
         OptionEntity option = optionRepository.findById(optionId).orElseThrow(
                 () -> new RequestUnavailableException("Option with Id " + optionId + " doesnt exist"));
-        if (poll.getPollDateExpiration() != null && now.after(poll.getPollDateExpiration())) {
-            throw new RequestUnavailableException("This poll expired");
+        if (poll.getPollDateExpiration() != null || now.after(poll.getPollDateExpiration())) {
+            throw new RequestUnavailableException("This poll has expired");
         }
         UserEntity user = userRepository.findById(userId).orElseThrow(
                 () -> new RequestUnavailableException("User with Id " + userId + " doesnt exist"));
-        if (voteRepository.findByUserId(userId).isPresent()){
+        if (voteRepository.findByUserId(userId).isPresent()) {
             throw new RequestUnavailableException("You have already voted in this poll");
         }
         vote.setUser(user);
@@ -74,10 +73,13 @@ public class PollService {
 
     private void addVoteCount(OptionEntity option, PollEntity poll) {
         option.setVotes(option.getVotes() + 1);
-        poll.setVotes(poll.getVotes()+1);
+        poll.setVotes(poll.getVotes() + 1);
     }
 
-    public List<UserEntity> displayVoters(long optionId) {
+    public List<UserEntity> displayOptionVoters(long optionId) {
         return voteRepository.findAllOptionVoters(optionId);
+    }
+    public List<UserEntity> displayPollVoters(long pollId) {
+        return voteRepository.findAllPollVoters(pollId);
     }
 }

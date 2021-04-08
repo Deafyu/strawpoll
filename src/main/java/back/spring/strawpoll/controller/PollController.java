@@ -1,27 +1,23 @@
 package back.spring.strawpoll.controller;
 
-import back.spring.strawpoll.entity.OptionEntity;
 import back.spring.strawpoll.entity.PollEntity;
 import back.spring.strawpoll.entity.UserEntity;
-import back.spring.strawpoll.repository.VoteRepository;
 import back.spring.strawpoll.service.PollService;
-import back.spring.strawpoll.service.UserService;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @FieldDefaults(makeFinal = true)
 @RestController
 public class PollController {
     PollService pollService;
-    UserService userService;
+
     @Autowired
-    public PollController(PollService pollService, UserService userService) {
+    public PollController(PollService pollService) {
         this.pollService = pollService;
-        this.userService = userService;
     }
 
     @RequestMapping(value = "/polls")
@@ -29,9 +25,9 @@ public class PollController {
         return pollService.getAllPolls();
     }
 
-    @RequestMapping("/polls/id={id}")
-    public PollEntity getPoll(@PathVariable long id) {
-        return pollService.getSinglePollById(id);
+    @RequestMapping("/polls/id={pollId}")
+    public Optional<PollEntity> getPollById(@PathVariable long pollId) {
+        return pollService.getSinglePollById(pollId);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/polls")
@@ -39,20 +35,24 @@ public class PollController {
         pollService.createPoll(poll);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/polls/id={id}")
-    public void deletePoll(@PathVariable long id) {
-        pollService.deletePoll(id);
+    @RequestMapping(method = RequestMethod.DELETE, value = "/polls/id={pollId}")
+    public void deletePoll(@PathVariable long pollId) {
+        pollService.deletePoll(pollId);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/polls/id={pollId}/vote")
-    public void sumbitVote(long optionId, long userId, @PathVariable long pollId){
-        pollService.submitVote(optionId,userId,pollId);
+    public void submitVote(@RequestParam long optionId, @RequestParam long userId, @PathVariable long pollId) {
+        pollService.submitVote(optionId, userId, pollId);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/polls/id={pollId}/vote/{optionId}")
-    public void displayVoters(@PathVariable long optionId, @PathVariable long pollId){
-        pollService.displayVoters(optionId);
+    public List<UserEntity> displayOptionVoters(@PathVariable long pollId, @PathVariable long optionId) {
+        return pollService.displayOptionVoters(optionId);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/polls/id={pollId}/vote")
+    public List<UserEntity> displayPollVoters(@PathVariable long pollId) {
+        return pollService.displayPollVoters(pollId);
+    }
 
 }
