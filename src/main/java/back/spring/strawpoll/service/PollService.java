@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static back.spring.strawpoll.ut.DateTimeUtil.getCurrentDate;
+
 @FieldDefaults(makeFinal = true)
 @Service
 public class PollService {
@@ -31,7 +33,7 @@ public class PollService {
     }
 
     public List<PollEntity> getAllPolls() {
-        return new ArrayList<>(pollRepository.findAll());
+        return pollRepository.findAll();
     }
 
     public Optional<PollEntity> getSinglePollById(long id) {
@@ -47,28 +49,39 @@ public class PollService {
     }
 
     public void submitVote(long optionId, long userId, long pollId) {
-        Date now = new Date();
         VoteEntity vote = new VoteEntity();
-        PollEntity poll = pollRepository.findById(pollId).orElseThrow(
-                () -> new RequestUnavailableException("Poll with Id " + pollId + " doesnt exist"));
-        OptionEntity option = optionRepository.findById(optionId).orElseThrow(
-                () -> new RequestUnavailableException("Option with Id " + optionId + " doesnt exist"));
-        if (poll.getPollDateExpiration() != null || now.after(poll.getPollDateExpiration())) {
-            throw new RequestUnavailableException("This poll has expired");
+        Date currentDate = getCurrentDate();
+        Optional<PollEntity> poll = pollRepository.findById(pollId);
+        Optional<UserEntity> user = userRepository.findById(userId);
+        OptionEntity optionEntity;
+        UserEntity userEntity;
+        PollEntity pollEntity;
+        if (poll.isPresent() && user.isPresent() ) {
+            pollEntity= poll.get();
+            userEntity= user.get();
+        }else{
+            throw new RequestUnavailableException("This type of vote is impossible");
         }
-        UserEntity user = userRepository.findById(userId).orElseThrow(
-                () -> new RequestUnavailableException("User with Id " + userId + " doesnt exist"));
-        if (voteRepository.findByUserId(userId).isPresent()) {
+        if (voteRepository.findByUserIdAndPollId(userId, pollId).isPresent()) {
             throw new RequestUnavailableException("You have already voted in this poll");
         }
-        vote.setUser(user);
-        vote.setOption(option);
-        vote.setPoll(poll);
-        vote.setDate(now);
-        addVoteCount(option, poll);
+        Optional<OptionEntity> option = pollEntity.getOptions().stream().filter(o -> o.getId() == optionId).findFirst();
+        if (option.isPresent()) {
+            optionEntity = option.get();
+        } else {
+            throw new RequestUnavailableException("Option with Id " + optionId + " doest not exist");
+        }
+        if (pollEntity.getPollDateExpiration() != null && currentDate.after(pollEntity.getPollDateExpiration())) {
+            throw new RequestUnavailableException("This poll has expired");
+        }
+        vote.setUser(userEntity);
+        vote.setOption(optionEntity);
+        vote.setPoll(pollEntity);
+        vote.setDate(currentDate);
+        addVoteCount(optionEntity, pollEntity);
         voteRepository.save(vote);
-        optionRepository.save(option);
-        pollRepository.save(poll);
+        optionRepository.save(optionEntity);
+        pollRepository.save(pollEntity);
     }
 
     private void addVoteCount(OptionEntity option, PollEntity poll) {
@@ -79,6 +92,7 @@ public class PollService {
     public List<UserEntity> displayOptionVoters(long optionId) {
         return voteRepository.findAllOptionVoters(optionId);
     }
+
     public List<UserEntity> displayPollVoters(long pollId) {
         return voteRepository.findAllPollVoters(pollId);
     }

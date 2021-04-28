@@ -29,11 +29,6 @@ public class UserController {
         return userService.getUserById(userId);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/users")
-    public void addUser(@RequestBody UserEntity user) {
-        userService.createUser(user);
-    }
-
     @RequestMapping(method = RequestMethod.DELETE, value = "/users/id={userId}")
     public void deleteUser(@PathVariable long userId) {
         userService.deleteUserById(userId);

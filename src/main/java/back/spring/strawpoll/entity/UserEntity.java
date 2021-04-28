@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -21,6 +22,9 @@ public class UserEntity {
     String name;
     @NotBlank
     String password;
+    @NotBlank
+    @Column(unique = true)
+    String email;
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name = "User_Group",
@@ -28,6 +32,8 @@ public class UserEntity {
             inverseJoinColumns = { @JoinColumn(name = "group_id") }
     )
     List<GroupEntity>groups;
+    @ManyToMany(fetch = FetchType.EAGER)
+    Set<RoleEntity> roles;
     public void addToGroup(GroupEntity group){
         groups.add(group);
     }
