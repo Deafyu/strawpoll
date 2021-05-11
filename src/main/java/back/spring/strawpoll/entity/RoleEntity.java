@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Setter
 @Getter
@@ -21,5 +18,6 @@ public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
+    @Enumerated(EnumType.STRING)
     Role role;
 }

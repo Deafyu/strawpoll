@@ -6,17 +6,21 @@ import back.spring.strawpoll.entity.UserEntity;
 import back.spring.strawpoll.exception.RequestUnavailableException;
 import back.spring.strawpoll.repository.*;
 import back.spring.strawpoll.entity.VoteEntity;
+import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import back.spring.strawpoll.response.*;
+
 
 import java.util.*;
 
 import static back.spring.strawpoll.ut.DateTimeUtil.getCurrentDate;
 
-@FieldDefaults(makeFinal = true)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Service
 public class PollService {
+    Response response = new Response();
     OptionRepository optionRepository;
     UserRepository userRepository;
     GroupRepository groupRepository;
@@ -48,40 +52,49 @@ public class PollService {
         pollRepository.deleteById(id);
     }
 
-    public void submitVote(long optionId, long userId, long pollId) {
-        VoteEntity vote = new VoteEntity();
-        Date currentDate = getCurrentDate();
-        Optional<PollEntity> poll = pollRepository.findById(pollId);
-        Optional<UserEntity> user = userRepository.findById(userId);
-        OptionEntity optionEntity;
-        UserEntity userEntity;
-        PollEntity pollEntity;
-        if (poll.isPresent() && user.isPresent() ) {
-            pollEntity= poll.get();
-            userEntity= user.get();
-        }else{
-            throw new RequestUnavailableException("This type of vote is impossible");
+
+    public String submitVote(long optionId, long userId, long pollId) {
+        Optional<PollEntity> optionalPollEntity = pollRepository.findById(pollId);
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(userId);
+        Optional<VoteEntity> optionalVoteEntity = voteRepository.findByUserIdAndPollId(userId, pollId);
+        Optional<OptionEntity> optionalOptionEntity;
+
+        if (optionalVoteEntity.isPresent()) response.setBody("cccc");
+        if (optionalUserEntity.isEmpty()) response.setBody("bbbb");
+        if (optionalPollEntity.isEmpty()) response.setBody("xd");
+
+        if (response.getBody().isEmpty()) {
+            PollEntity pollEntity = optionalPollEntity.get();
+            optionalOptionEntity = pollEntity.getOptions()
+                    .stream()
+                    .filter(o -> o.getId() == optionId)
+                    .findFirst();
+
+            if (optionalOptionEntity.isEmpty()) response.setBody("fadsf");
+            if (isPollExpired(pollEntity.getPollDateExpiration())) response.setBody("eeee");
+            if (!response.getBody().isEmpty()) return "";
+
+            OptionEntity optionEntity = optionalOptionEntity.get();
+            UserEntity userEntity = optionalUserEntity.get();
+            VoteEntity voteEntity = createVoteEntity(userEntity, optionEntity, pollEntity);
+            voteRepository.save(voteEntity);
+            optionRepository.save(optionEntity);
+            pollRepository.save(pollEntity);
         }
-        if (voteRepository.findByUserIdAndPollId(userId, pollId).isPresent()) {
-            throw new RequestUnavailableException("You have already voted in this poll");
-        }
-        Optional<OptionEntity> option = pollEntity.getOptions().stream().filter(o -> o.getId() == optionId).findFirst();
-        if (option.isPresent()) {
-            optionEntity = option.get();
-        } else {
-            throw new RequestUnavailableException("Option with Id " + optionId + " doest not exist");
-        }
-        if (pollEntity.getPollDateExpiration() != null && currentDate.after(pollEntity.getPollDateExpiration())) {
-            throw new RequestUnavailableException("This poll has expired");
-        }
-        vote.setUser(userEntity);
-        vote.setOption(optionEntity);
-        vote.setPoll(pollEntity);
-        vote.setDate(currentDate);
-        addVoteCount(optionEntity, pollEntity);
-        voteRepository.save(vote);
-        optionRepository.save(optionEntity);
-        pollRepository.save(pollEntity);
+        return response.getBody();
+    }
+
+    private VoteEntity createVoteEntity(UserEntity userEntity, OptionEntity optionEntity, PollEntity pollEntity) {
+        VoteEntity voteEntity = new VoteEntity();
+        voteEntity.setUser(userEntity);
+        voteEntity.setOption(optionEntity);
+        voteEntity.setPoll(pollEntity);
+        voteEntity.setDate(getCurrentDate());
+        return voteEntity;
+    }
+
+    private boolean isPollExpired(Date date) {
+        return date != null && getCurrentDate().after(date);
     }
 
     private void addVoteCount(OptionEntity option, PollEntity poll) {

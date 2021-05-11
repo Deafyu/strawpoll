@@ -5,6 +5,7 @@ import back.spring.strawpoll.entity.UserEntity;
 import back.spring.strawpoll.exception.RequestUnavailableException;
 import back.spring.strawpoll.repository.GroupRepository;
 import back.spring.strawpoll.repository.UserRepository;
+import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@FieldDefaults(makeFinal = true)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Service
 public class GroupService {
     GroupRepository groupRepository;

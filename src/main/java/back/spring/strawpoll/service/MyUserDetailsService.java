@@ -3,6 +3,7 @@ package back.spring.strawpoll.service;
 import back.spring.strawpoll.entity.RoleEntity;
 import back.spring.strawpoll.entity.UserEntity;
 import back.spring.strawpoll.exception.RequestUnavailableException;
+import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@FieldDefaults(makeFinal = true)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Service
 public class MyUserDetailsService implements UserDetailsService {
     UserService userService;
@@ -29,7 +30,7 @@ public class MyUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
         UserEntity user = userService.getUserByName(name).orElseThrow(
                 () -> new UsernameNotFoundException("User not found: " + name));
-        List<GrantedAuthority>  authorityList = getUserAuthority(user.getRoles());
+        List<GrantedAuthority> authorityList = getUserAuthority(user.getRoles());
         return buildUserForAuthentication(user, authorityList);
     }
 
@@ -40,6 +41,7 @@ public class MyUserDetailsService implements UserDetailsService {
         }
         return new ArrayList<>(roles);
     }
+
     private UserDetails buildUserForAuthentication(UserEntity user, List<GrantedAuthority> authorities) {
         return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), authorities);
     }

@@ -42,9 +42,10 @@ public class PollController {
         pollService.deletePoll(pollId);
     }
 
+    @ResponseBody
     @RequestMapping(method = RequestMethod.POST, value = "/polls/id={pollId}/vote")
-    public void submitVote(@RequestParam long optionId, @RequestParam long userId, @PathVariable long pollId) {
-        pollService.submitVote(optionId, userId, pollId);
+    public String submitVote(@RequestParam long optionId, @RequestParam long userId, @PathVariable long pollId) {
+        return pollService.submitVote(optionId, userId, pollId);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/polls/id={pollId}/vote/{optionId}")

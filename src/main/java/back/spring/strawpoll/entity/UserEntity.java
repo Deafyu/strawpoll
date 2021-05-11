@@ -40,4 +40,16 @@ public class UserEntity {
     public void removeFromGroup(GroupEntity group){
         groups.remove(group);
     }
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", groups=" + groups +
+                ", roles=" + roles +
+                '}';
+    }
 }

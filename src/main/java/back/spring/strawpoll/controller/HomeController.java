@@ -3,10 +3,7 @@ package back.spring.strawpoll.controller;
 import back.spring.strawpoll.dto.UserRegisterDto;
 import back.spring.strawpoll.service.UserService;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @FieldDefaults(makeFinal = true)
@@ -34,9 +31,8 @@ public class HomeController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/register")
-    public String registerUser(@ModelAttribute("UserEntity") UserRegisterDto userRegisterDto) {
+    public String registerUser(@RequestBody UserRegisterDto userRegisterDto) {
         userService.createUser(userRegisterDto);
         return "success";
     }
-
 }

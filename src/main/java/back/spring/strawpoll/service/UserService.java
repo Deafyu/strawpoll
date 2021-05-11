@@ -6,6 +6,7 @@ import back.spring.strawpoll.entity.VoteEntity;
 import back.spring.strawpoll.exception.UserAlreadyExistingException;
 import back.spring.strawpoll.repository.*;
 import back.spring.strawpoll.ut.Role;
+import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@FieldDefaults(makeFinal = true)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Service
 public class UserService {
     OptionRepository optionRepository;
@@ -48,7 +49,6 @@ public class UserService {
             user.setName(userRegisterDto.getName());
             user.setPassword(getPasswordEncoder().encode(userRegisterDto.getPassword()));
             user.setEmail(userRegisterDto.getEmail());
-            user.setRoles(Set.of(roleRepository.findByRole(Role.USER)));
             userRepository.save(user);
         }
     }
@@ -61,9 +61,9 @@ public class UserService {
 //            throw new UserAlreadyExistingException("User with name: " + userRegisterDto.getName() + " already exists");
             System.out.println("User with name: " + userRegisterDto.getName() + " already exists");
         } else {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public Optional<UserEntity> getUserById(long userId) {

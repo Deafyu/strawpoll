@@ -12,6 +12,14 @@ import javax.validation.constraints.NotBlank;
 public class UserRegisterDto {
     String name;
     String password;
-    String repeatPassword;
     String email;
+
+    @Override
+    public String toString() {
+        return "UserRegisterDto{" +
+                "name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }
