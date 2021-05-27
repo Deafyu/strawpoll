@@ -1,7 +1,6 @@
 import React from "react";
-import { Box, Button, Center, Heading } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
-
+import { Box, Center, Heading } from "@chakra-ui/react";
+import { ButtonLink } from "../Components";
 interface Props {}
 
 const H1Text = "Strawpool app";
@@ -30,15 +29,11 @@ const Main: React.FC<Props> = (): JSX.Element => {
         margin="auto"
         alignItems="center"
       >
-        <Button as={Link} to="/register" type="button">
-          Sign up
-        </Button>
+        <ButtonLink to="/register" type="button" text="Sign up" />
         <Heading as="h3" fontSize={24} color="linkedin.900">
           Start now!
         </Heading>
-        <Button as={Link} to="/login" type="button">
-          Sign in
-        </Button>
+        <ButtonLink to="/login" type="button" text="Sign in" />
       </Center>
     </Box>
   );

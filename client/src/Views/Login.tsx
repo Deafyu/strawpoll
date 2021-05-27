@@ -1,6 +1,6 @@
 import React from "react";
 import { Center, Flex, Heading } from "@chakra-ui/react";
-import { LoginForm } from "../Components";
+import { ButtonLink, LoginForm } from "../Components";
 
 const initialValues = {
   email: "",
@@ -24,7 +24,17 @@ const Login: React.FC<Props> = (): JSX.Element => {
         justifyContent="center"
         alignItems="center"
       >
-        <LoginForm initialValues={initialValues} buttonText="Login" />
+        <LoginForm
+          initialValues={initialValues}
+          buttonText="Login"
+          onSubmit={async () => {}}
+        />
+        <ButtonLink
+          to="/register"
+          type="button"
+          mt="50px"
+          text="Dont have account? Register"
+        />
       </Flex>
     </Flex>
   );
